@@ -472,4 +472,8 @@ function init() {
         fetchAllData();
     }
     
-   
+    console.log("Dashboard initialized! Auto-updates every 10 minutes.");
+}
+
+// Start the app
+init();
