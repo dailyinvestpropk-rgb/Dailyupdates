@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Live Islamic Dashboard - Real Time Updates</title>
+    <title>Live Islamic Dashboard </title>
     <link rel="stylesheet" href="style.css">
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -42,11 +42,48 @@
             </div>
         </div>
 
-        <!-- News Card -->
+        <!-- YouTube Channel Card -->
         <div class="card">
-            <div class="card-title">📰 Breaking News Headlines</div>
-            <div class="news-list" id="newsData">
-                <div>Loading news...</div>
+            <div class="card-title">🎵 YouTube Channel - Naats & Bayans</div>
+            <div class="youtube-container" id="youtubeData">
+                <div class="channel-info">
+                    <img src="https://img.youtube.com/channel/UCmQIzI8cqgFmuIQxwpE5_MQ/0.jpg" alt="Channel" class="channel-img">
+                    <div class="channel-details">
+                        <h3>Islamic Naats & Bayans</h3>
+                        <p>Subscribe for latest naats</p>
+                        <button onclick="openYouTubeChannel()" class="subscribe-btn">🔔 Subscribe on YouTube</button>
+                    </div>
+                </div>
+                <div class="video-player" id="videoPlayer">
+                    <iframe 
+                        id="youtubePlayer"
+                        src="https://www.youtube.com/embed?listType=user_uploads&list=UCmQIzI8cqgFmuIQxwpE5_MQ"
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="live-status" id="liveStatus">
+                    🔴 Checking live status...
+                </div>
+            </div>
+        </div>
+
+        <!-- Newspapers Card -->
+        <div class="card">
+            <div class="card-title">📰 Pakistan Newspapers</div>
+            <div class="newspaper-tabs" id="newspaperTabs">
+                <button class="tab-btn active" onclick="loadNewspaper('jang')">🇵🇰 Jang</button>
+                <button class="tab-btn" onclick="loadNewspaper('dawn')">🇬🇧 Dawn</button>
+                <button class="tab-btn" onclick="loadNewspaper('express')">📰 Express</button>
+                <button class="tab-btn" onclick="loadNewspaper('nawaiwaqt')">📰 Nawaiwaqt</button>
+                <button class="tab-btn" onclick="loadNewspaper('thenews')">📰 The News</button>
+            </div>
+            <div class="news-container" id="newsContainer">
+                <div class="news-loading">Loading headlines...</div>
+            </div>
+            <div class="full-paper-btn">
+                <button onclick="openFullNewspaper()" class="full-paper">📖 Read Full Newspaper Online</button>
             </div>
         </div>
 
@@ -58,6 +95,14 @@
                 <div class="translation">--</div>
                 <div class="surah">--</div>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal for reading full article -->
+    <div id="articleModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalBody">Loading...</div>
         </div>
     </div>
 
