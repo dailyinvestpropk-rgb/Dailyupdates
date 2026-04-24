@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Live Islamic Dashboard - Real Time Updates</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📱 Live Islamic Dashboard</h1>
+            <div class="status">
+                <span id="onlineStatus">🟢 Online</span>
+                <span id="lastUpdate">Just now</span>
+                <button onclick="manualRefresh()" class="refresh-btn">🔄 Refresh</button>
+            </div>
+        </header>
+
+        <!-- Weather Card -->
+        <div class="card">
+            <div class="card-title">🌤️ Live Weather</div>
+            <div class="weather-content" id="weatherData">
+                <div class="temp">--°C</div>
+                <div class="condition">Loading...</div>
+                <div class="location">📍 --</div>
+            </div>
+        </div>
+
+        <!-- Namaz Times Card -->
+        <div class="card">
+            <div class="card-title">🕌 Namaz Times</div>
+            <div class="namaz-grid" id="namazData">
+                <div>Fajr: --</div>
+                <div>Dhuhr: --</div>
+                <div>Asr: --</div>
+                <div>Maghrib: --</div>
+                <div>Isha: --</div>
+            </div>
+        </div>
+
+        <!-- News Card -->
+        <div class="card">
+            <div class="card-title">📰 Breaking News Headlines</div>
+            <div class="news-list" id="newsData">
+                <div>Loading news...</div>
+            </div>
+        </div>
+
+        <!-- Quran Ayat Card -->
+        <div class="card">
+            <div class="card-title">📖 Quran Ayat of the Day</div>
+            <div class="ayat-content" id="ayatData">
+                <div class="arabic">--</div>
+                <div class="translation">--</div>
+                <div class="surah">--</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
