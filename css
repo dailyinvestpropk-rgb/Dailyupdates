@@ -1,0 +1,238 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+header {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+header h1 {
+    font-size: 1.5em;
+    color: #333;
+}
+
+.status {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#onlineStatus {
+    padding: 5px 10px;
+    border-radius: 20px;
+    background: #4CAF50;
+    color: white;
+    font-size: 0.9em;
+}
+
+#onlineStatus.offline {
+    background: #f44336;
+}
+
+.refresh-btn {
+    padding: 5px 15px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: transform 0.3s;
+}
+
+.refresh-btn:hover {
+    transform: scale(1.05);
+    background: #5a67d8;
+}
+
+.card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.weather-content {
+    text-align: center;
+}
+
+.temp {
+    font-size: 3em;
+    font-weight: bold;
+    color: #333;
+}
+
+.condition {
+    font-size: 1.2em;
+    color: #666;
+    margin: 5px 0;
+    text-transform: capitalize;
+}
+
+.location {
+    color: #999;
+    font-size: 0.9em;
+}
+
+.namaz-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+    text-align: center;
+}
+
+.namaz-grid div {
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.news-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.news-item {
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-left: 3px solid #667eea;
+}
+
+.news-item:hover {
+    background: #e9ecef;
+    transform: translateX(5px);
+}
+
+.news-title {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 1em;
+}
+
+.news-description {
+    font-size: 0.85em;
+    color: #666;
+    margin-top: 5px;
+    line-height: 1.3;
+}
+
+.news-source {
+    font-size: 0.8em;
+    color: #999;
+    margin-top: 8px;
+}
+
+.ayat-content {
+    text-align: center;
+}
+
+.arabic {
+    font-size: 1.5em;
+    font-family: 'Amiri', 'Traditional Arabic', serif;
+    color: #2d3748;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.translation {
+    color: #4a5568;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.surah {
+    color: #667eea;
+    font-weight: 500;
+    font-size: 0.9em;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 0;
+    }
+    
+    .namaz-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    header h1 {
+        font-size: 1.2em;
+    }
+    
+    .status {
+        gap: 8px;
+    }
+    
+    .refresh-btn {
+        padding: 4px 12px;
+        font-size: 0.8em;
+    }
+}
+
+/* Scrollbar styling */
+.news-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.news-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.news-list::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 10px;
+}
+
+.news-list::-webkit-scrollbar-thumb:hover {
+    background: #5a67d8;
+}
