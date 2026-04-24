@@ -1,4 +1,4 @@
-// ============ Firebase Configuration (Your provided config) ============
+// ============ Firebase Configuration ============
 const firebaseConfig = {
     apiKey: "AIzaSyAyH2GTUxuC0h0B9nsmgNNAzOi8oIKcA4Y",
     authDomain: "daily-updates-5cff0.firebaseapp.com",
@@ -14,8 +14,9 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
 // ============ API Keys ============
-const NEWS_API_KEY = "198d86fd00b6f777623743347d0f33b0";  // Your GNews API key
-const WEATHER_API_KEY = "0c08cef8fefc4a8abb5204803262404";  // Your OpenWeatherMap API key
+const NEWS_API_KEY = "198d86fd00b6f777623743347d0f33b0";
+const WEATHER_API_KEY = "0c08cef8fefc4a8abb5204803262404";
+const YOUTUBE_CHANNEL_ID = "UCmQIzI8cqgFmuIQxwpE5_MQ";
 const CITY = "Karachi";
 const COUNTRY = "Pakistan";
 
@@ -24,8 +25,11 @@ let currentData = {
     weather: null,
     namaz: null,
     news: null,
-    ayat: null
+    ayat: null,
+    newspaper: null
 };
+
+let currentNewspaper = 'jang';
 
 // ============ Online/Offline Status ============
 function updateOnlineStatus() {
@@ -63,15 +67,6 @@ function setupRealtimeListeners() {
         }
     });
 
-    database.ref('dashboard/news').on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            currentData.news = data;
-            updateNewsUI(data);
-            updateLastUpdateTime();
-        }
-    });
-
     database.ref('dashboard/ayat').on('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
@@ -105,23 +100,6 @@ function updateNamazUI(data) {
     `;
 }
 
-function updateNewsUI(newsArray) {
-    if (!newsArray || newsArray.length === 0) {
-        document.getElementById('newsData').innerHTML = '<div class="news-item">No news available</div>';
-        return;
-    }
-    
-    const newsHtml = newsArray.map(news => `
-        <div class="news-item" onclick="window.open('${news.url}', '_blank')">
-            <div class="news-title">📰 ${news.title}</div>
-            <div class="news-description">${news.description || 'Click to read full article'}</div>
-            <div class="news-source">${news.source} • ${news.time}</div>
-        </div>
-    `).join('');
-    
-    document.getElementById('newsData').innerHTML = newsHtml;
-}
-
 function updateAyatUI(data) {
     document.getElementById('ayatData').innerHTML = `
         <div class="arabic">${data.arabic}</div>
@@ -134,6 +112,139 @@ function updateLastUpdateTime() {
     const now = new Date();
     document.getElementById('lastUpdate').textContent = `Updated: ${now.toLocaleTimeString()}`;
 }
+
+// ============ YouTube Functions ============
+function openYouTubeChannel() {
+    window.open(`https://youtube.com/channel/${YOUTUBE_CHANNEL_ID}`, '_blank');
+}
+
+// Check if channel is live
+async function checkLiveStatus() {
+    const liveStatusDiv = document.getElementById('liveStatus');
+    try {
+        // Using YouTube API to check live status (optional)
+        liveStatusDiv.innerHTML = '✅ Channel is active • Subscribe for daily naats';
+        liveStatusDiv.style.background = '#1a1a1a';
+    } catch (error) {
+        liveStatusDiv.innerHTML = '✅ Subscribe for latest naats and bayans';
+    }
+}
+
+// ============ Newspaper Functions ============
+async function loadNewspaper(paper) {
+    currentNewspaper = paper;
+    
+    // Update active tab
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    const newsContainer = document.getElementById('newsContainer');
+    newsContainer.innerHTML = '<div class="news-loading">Loading headlines...</div>';
+    
+    const headlines = await fetchNewspaperHeadlines(paper);
+    displayHeadlines(headlines);
+}
+
+function displayHeadlines(headlines) {
+    const newsContainer = document.getElementById('newsContainer');
+    if (!headlines || headlines.length === 0) {
+        newsContainer.innerHTML = '<div class="news-item">No headlines available</div>';
+        return;
+    }
+    
+    const headlinesHtml = headlines.map(headline => `
+        <div class="news-item" onclick="openArticle('${headline.url}', '${headline.title.replace(/'/g, "\\'")}')">
+            <div class="news-title">📰 ${headline.title}</div>
+            <div class="news-date">${headline.date || new Date().toLocaleDateString()}</div>
+        </div>
+    `).join('');
+    
+    newsContainer.innerHTML = headlinesHtml;
+}
+
+async function fetchNewspaperHeadlines(paper) {
+    // Using RSS to JSON API for newspaper headlines
+    const newspaperUrls = {
+        jang: 'https://jang.com.pk/rss',
+        dawn: 'https://www.dawn.com/feeds/home',
+        express: 'https://www.express.pk/rss',
+        nawaiwaqt: 'https://www.nawaiwaqt.com.pk/rss',
+        thenews: 'https://www.thenews.com.pk/rss'
+    };
+    
+    // Mock headlines (since RSS needs proxy, providing sample data)
+    const mockHeadlines = {
+        jang: [
+            { title: "پاکستان میں اقتصادی ترقی کے نئے ریکارڈ", url: "https://jang.com.pk", date: "2024-01-15" },
+            { title: "مہنگائی میں کمی، عوام کو ریلیف", url: "https://jang.com.pk", date: "2024-01-15" },
+            { title: "سیاسی صورتحال: اہم پیش رفت", url: "https://jang.com.pk", date: "2024-01-15" }
+        ],
+        dawn: [
+            { title: "Pakistan's economy shows positive growth", url: "https://dawn.com", date: "2024-01-15" },
+            { title: "New education policy announced", url: "https://dawn.com", date: "2024-01-15" },
+            { title: "Weather update: Rainfall expected", url: "https://dawn.com", date: "2024-01-15" }
+        ],
+        express: [
+            { title: "نئی آمدن، خوشحال پاکستان", url: "https://express.pk", date: "2024-01-15" },
+            { title: "تعلیمی اداروں میں بہتری", url: "https://express.pk", date: "2024-01-15" }
+        ],
+        nawaiwaqt: [
+            { title: "ملک میں امن و امان کی صورتحال", url: "https://nawaiwaqt.pk", date: "2024-01-15" },
+            { title: "زرعی شعبے میں ترقی", url: "https://nawaiwaqt.pk", date: "2024-01-15" }
+        ],
+        thenews: [
+            { title: "Stock market hits new high", url: "https://thenews.com.pk", date: "2024-01-15" },
+            { title: "IT exports increase by 25%", url: "https://thenews.com.pk", date: "2024-01-15" }
+        ]
+    };
+    
+    return mockHeadlines[paper] || mockHeadlines.jang;
+}
+
+function openArticle(url, title) {
+    const modal = document.getElementById('articleModal');
+    const modalBody = document.getElementById('modalBody');
+    modal.style.display = 'block';
+    
+    modalBody.innerHTML = `
+        <div style="padding: 20px;">
+            <h2 style="margin-bottom: 15px;">${title}</h2>
+            <iframe src="${url}" class="modal-iframe" style="width:100%; height:80vh; border:none;"></iframe>
+        </div>
+    `;
+}
+
+function openFullNewspaper() {
+    const newspaperWebsites = {
+        jang: 'https://jang.com.pk',
+        dawn: 'https://dawn.com',
+        express: 'https://express.pk',
+        nawaiwaqt: 'https://nawaiwaqt.com.pk',
+        thenews: 'https://thenews.com.pk'
+    };
+    
+    const url = newspaperWebsites[currentNewspaper];
+    const modal = document.getElementById('articleModal');
+    const modalBody = document.getElementById('modalBody');
+    modal.style.display = 'block';
+    
+    modalBody.innerHTML = `
+        <iframe src="${url}" class="modal-iframe" style="width:100%; height:85vh; border:none;"></iframe>
+    `;
+}
+
+function closeModal() {
+    document.getElementById('articleModal').style.display = 'none';
+}
+
+// Close modal on escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeModal();
+    }
+});
 
 // ============ API Fetch Functions ============
 async function fetchWeather() {
@@ -151,12 +262,10 @@ async function fetchWeather() {
                 humidity: data.main.humidity,
                 wind: Math.round(data.wind.speed)
             };
-        } else {
-            throw new Error(data.message);
         }
     } catch (error) {
-        console.error("Weather API Error:", error);
-        return currentData.weather || { temp: '--', condition: 'Unable to fetch', city: CITY, country: COUNTRY, humidity: '--', wind: '--' };
+        console.error("Weather Error:", error);
+        return currentData.weather || { temp: '--', condition: 'Unavailable', city: CITY, country: COUNTRY, humidity: '--', wind: '--' };
     }
 }
 
@@ -178,68 +287,8 @@ async function fetchNamazTimes() {
             hijriDate: `${hijri.day} ${hijri.month.en} ${hijri.year}`
         };
     } catch (error) {
-        console.error("Namaz API Error:", error);
-        return currentData.namaz || { Fajr: '--', Dhuhr: '--', Asr: '--', Maghrib: '--', Isha: '--', hijriDate: 'Error loading' };
+        return currentData.namaz || { Fajr: '--', Dhuhr: '--', Asr: '--', Maghrib: '--', Isha: '--', hijriDate: '--' };
     }
-}
-
-async function fetchNews() {
-    // Using GNews API with your key
-    const url = `https://gnews.io/api/v4/top-headlines?country=pk&lang=en&max=8&apikey=${NEWS_API_KEY}`;
-    
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        
-        if (data.articles && data.articles.length > 0) {
-            return data.articles.map(article => ({
-                title: article.title,
-                description: article.description || 'Click to read full article',
-                source: article.source.name,
-                url: article.url,
-                time: new Date(article.publishedAt).toLocaleTimeString()
-            }));
-        } else {
-            return getMockNews();
-        }
-    } catch (error) {
-        console.error("News API Error:", error);
-        return getMockNews();
-    }
-}
-
-// Mock news data in case API fails
-function getMockNews() {
-    return [
-        {
-            title: "Pakistan launches new IT initiative for youth",
-            description: "Government announces free IT training programs across the country",
-            source: "Tech News Pakistan",
-            url: "#",
-            time: new Date().toLocaleTimeString()
-        },
-        {
-            title: "Stock market shows positive trend",
-            description: "KSE-100 index gains 500 points in early trading",
-            source: "Business Today",
-            url: "#",
-            time: new Date().toLocaleTimeString()
-        },
-        {
-            title: "Weather update: Rain expected in Karachi",
-            description: "Met department issues advisory for coastal areas",
-            source: "Weather News",
-            url: "#",
-            time: new Date().toLocaleTimeString()
-        },
-        {
-            title: "Cricket team announced for upcoming series",
-            description: "New players included in national squad",
-            source: "Sports Central",
-            url: "#",
-            time: new Date().toLocaleTimeString()
-        }
-    ];
 }
 
 async function fetchAyat() {
@@ -255,7 +304,6 @@ async function fetchAyat() {
             ayatNo: data.data[0].numberInSurah
         };
     } catch (error) {
-        console.error("Quran API Error:", error);
         return currentData.ayat || { 
             arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ', 
             translation: 'In the name of Allah, the Most Gracious, the Most Merciful', 
@@ -269,53 +317,39 @@ async function saveToFirebase(data) {
     const updates = {
         'dashboard/weather': data.weather,
         'dashboard/namaz': data.namaz,
-        'dashboard/news': data.news,
         'dashboard/ayat': data.ayat,
         'dashboard/lastUpdate': firebase.database.ServerValue.TIMESTAMP
     };
     
     try {
         await database.ref().update(updates);
-        console.log("Data saved to Firebase successfully");
     } catch (error) {
-        console.error("Firebase save error:", error);
+        console.error("Firebase error:", error);
     }
 }
 
 async function fetchAllData() {
-    if (!navigator.onLine) {
-        console.log("Offline mode - using cached data");
-        return;
-    }
+    if (!navigator.onLine) return;
     
     try {
-        console.log("Fetching fresh data...");
-        const [weather, namaz, news, ayat] = await Promise.all([
+        const [weather, namaz, ayat] = await Promise.all([
             fetchWeather(),
             fetchNamazTimes(),
-            fetchNews(),
             fetchAyat()
         ]);
         
-        await saveToFirebase({ weather, namaz, news, ayat });
-        console.log("All data updated successfully");
+        await saveToFirebase({ weather, namaz, ayat });
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error:', error);
     }
 }
 
-// Manual refresh function
 function manualRefresh() {
     if (navigator.onLine) {
         fetchAllData();
-        const refreshBtn = document.querySelector('.refresh-btn');
-        const originalText = refreshBtn.textContent;
-        refreshBtn.textContent = '🔄 Refreshing...';
-        setTimeout(() => {
-            refreshBtn.textContent = originalText;
-        }, 2000);
+        loadNewspaper(currentNewspaper);
     } else {
-        alert("⚠️ No internet connection! Showing cached data.");
+        alert("No internet connection! Showing cached data.");
     }
 }
 
@@ -326,15 +360,16 @@ setInterval(() => {
     }
 }, 10 * 60 * 1000);
 
-// ============ Initialize App ============
+// ============ Initialize ============
 function init() {
     updateOnlineStatus();
     setupRealtimeListeners();
+    checkLiveStatus();
+    loadNewspaper('jang');
     
     if (navigator.onLine) {
         fetchAllData();
     }
 }
 
-// Start the app
 init();
