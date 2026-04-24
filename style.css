@@ -79,7 +79,7 @@ header h1 {
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
 }
 
 .card-title {
@@ -89,6 +89,37 @@ header h1 {
     margin-bottom: 15px;
     border-bottom: 2px solid #f0f0f0;
     padding-bottom: 10px;
+}
+
+/* Location Card */
+.location-selector {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#citySelect {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.location-btn {
+    padding: 10px 20px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.location-btn:hover {
+    background: #218838;
 }
 
 /* Weather Styles */
@@ -186,14 +217,6 @@ header h1 {
     border: none;
 }
 
-.live-status {
-    background: #2a2a2a;
-    padding: 10px;
-    border-radius: 8px;
-    text-align: center;
-    font-size: 0.9em;
-}
-
 /* Newspaper Styles */
 .newspaper-tabs {
     display: flex;
@@ -228,7 +251,7 @@ header h1 {
 }
 
 .news-item {
-    padding: 12px;
+    padding: 15px;
     margin-bottom: 10px;
     background: #f8f9fa;
     border-radius: 10px;
@@ -245,33 +268,28 @@ header h1 {
 .news-title {
     font-weight: 600;
     color: #333;
-    margin-bottom: 5px;
-    font-size: 0.95em;
+    margin-bottom: 8px;
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+.news-description {
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 8px;
 }
 
 .news-date {
     font-size: 0.75em;
     color: #999;
-    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.full-paper-btn {
-    text-align: center;
-    margin-top: 15px;
-}
-
-.full-paper {
-    padding: 10px 20px;
-    background: #28a745;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.full-paper:hover {
-    background: #218838;
+.read-more {
+    color: #667eea;
+    font-weight: 500;
 }
 
 /* Quran Ayat Styles */
@@ -308,18 +326,20 @@ header h1 {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.8);
+    background-color: rgba(0,0,0,0.9);
 }
 
 .modal-content {
     background-color: white;
-    margin: 5% auto;
+    margin: 3% auto;
     padding: 20px;
     width: 90%;
-    height: 85%;
+    height: 88%;
     border-radius: 15px;
     position: relative;
-    overflow-y: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .close {
@@ -330,16 +350,49 @@ header h1 {
     font-weight: bold;
     cursor: pointer;
     color: #666;
+    z-index: 1001;
 }
 
 .close:hover {
     color: #000;
 }
 
+#modalBody {
+    flex: 1;
+    overflow-y: auto;
+    margin-top: 20px;
+}
+
 .modal-iframe {
     width: 100%;
-    height: 95%;
+    height: 100%;
     border: none;
+}
+
+.loading {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2em;
+    color: #667eea;
+}
+
+/* Auto Update Indicator */
+.auto-update-badge {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #667eea;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.7em;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
 }
 
 /* Responsive */
@@ -353,11 +406,11 @@ header h1 {
     }
     
     header h1 {
-        font-size: 1.2em;
+        font-size: 1.1em;
     }
     
     .video-player iframe {
-        height: 250px;
+        height: 200px;
     }
     
     .channel-info {
@@ -372,6 +425,14 @@ header h1 {
     .tab-btn {
         padding: 6px 12px;
         font-size: 0.8em;
+    }
+    
+    .location-selector {
+        flex-direction: column;
+    }
+    
+    #citySelect, .location-btn {
+        width: 100%;
     }
 }
 
